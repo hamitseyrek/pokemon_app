@@ -6,6 +6,8 @@ import 'package:pokemon_app/pokemon_detail.dart';
 import 'model/pokedex.dart';
 
 class PokemonList extends StatefulWidget {
+  const PokemonList({Key? key}) : super(key: key);
+
   @override
   _PokemonListState createState() => _PokemonListState();
 }
@@ -25,7 +27,6 @@ class _PokemonListState extends State<PokemonList> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     data = getPokemons();
   }
@@ -41,43 +42,100 @@ class _PokemonListState extends State<PokemonList> {
       appBar: AppBar(
         title: const Text("Pokedex"),
       ),
-      body: Container(
-        child: OrientationBuilder(builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return FutureBuilder(
-                future: data,
-                builder: (context, AsyncSnapshot<Pokedex> snapShot) {
-                  if (snapShot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapShot.connectionState ==
-                      ConnectionState.done) {
-                    return GridView.count(
-                      crossAxisCount: 2,
-                      children: snapShot.data!.pokemon!.map((poke) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PokemonDetail(
-                                      pokemon: poke,
-                                    )));
-                          },
-                          child: Hero(
+      body: OrientationBuilder(builder: (context, orientation) {
+        if (orientation == Orientation.portrait) {
+          return FutureBuilder(
+              future: data,
+              builder: (context, AsyncSnapshot<Pokedex> snapShot) {
+                if (snapShot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapShot.connectionState == ConnectionState.done) {
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    children: snapShot.data!.pokemon!.map((poke) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PokemonDetail(
+                                    pokemon: poke,
+                                  )));
+                        },
+                        child: Hero(
+                          tag: poke.img!,
+                          child: Card(
+                            elevation: 4,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 120,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: "assets/loading.gif",
+                                      image: poke.img!,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  poke.name!,
+                                  style: const TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  throw Exception('hata1111');
+                }
+              });
+        } else {
+          return FutureBuilder(
+              future: data,
+              builder: (context, AsyncSnapshot<Pokedex> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done) {
+//              return GridView.builder(
+//                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                      crossAxisCount: 2), itemBuilder: (context, index) {
+//                return Text(gelenPokedex.data.pokemon[index].name);
+//              });
+
+                  return GridView.extent(
+                    maxCrossAxisExtent: 300,
+                    children: snapshot.data!.pokemon!.map((poke) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => PokemonDetail(
+                                    pokemon: poke,
+                                  )));
+                        },
+                        child: Hero(
                             tag: poke.img!,
                             child: Card(
-                              elevation: 4,
+                              elevation: 6,
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Expanded(
-                                    child: Container(
-                                      height: 120,
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder: "assets/loading.gif",
-                                        image: poke.img!,
-                                      ),
+                                  SizedBox(
+                                    width: 200,
+                                    height: 150,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: "assets/loading.gif",
+                                      image: poke.img!,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                   Text(
@@ -89,78 +147,16 @@ class _PokemonListState extends State<PokemonList> {
                                   )
                                 ],
                               ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    throw Exception('hata1111');
-                  }
-                });
-          } else {
-            return FutureBuilder(
-                future: data,
-                builder: (context, AsyncSnapshot<Pokedex> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.done) {
-//              return GridView.builder(
-//                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                      crossAxisCount: 2), itemBuilder: (context, index) {
-//                return Text(gelenPokedex.data.pokemon[index].name);
-//              });
-
-                    return GridView.extent(
-                      maxCrossAxisExtent: 300,
-                      children: snapshot.data!.pokemon!.map((poke) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PokemonDetail(
-                                      pokemon: poke,
-                                    )));
-                          },
-                          child: Hero(
-                              tag: poke.img!,
-                              child: Card(
-                                elevation: 6,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 200,
-                                      height: 150,
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder: "assets/loading.gif",
-                                        image: poke.img!,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                    Text(
-                                      poke.name!,
-                                      style: const TextStyle(
-                                          fontSize: 22,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ],
-                                ),
-                              )),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    throw Exception('hata111122222');
-                  }
-                });
-          }
-        }),
-      ),
+                            )),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  throw Exception('hata111122222');
+                }
+              });
+        }
+      }),
     );
   }
 }

@@ -4,9 +4,9 @@ import 'package:palette_generator/palette_generator.dart';
 import 'model/pokedex.dart';
 
 class PokemonDetail extends StatefulWidget {
-  Pokemon pokemon;
+  final Pokemon pokemon;
 
-  PokemonDetail({required this.pokemon});
+  const PokemonDetail({Key? key, required this.pokemon}) : super(key: key);
 
   @override
   PokemonDetailState createState() {
@@ -20,7 +20,6 @@ class PokemonDetailState extends State<PokemonDetail> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     baskinRenk = Colors.orangeAccent;
     baskinRengiBul();
@@ -89,7 +88,7 @@ class PokemonDetailState extends State<PokemonDetail> {
             flex: 2,
             child: Hero(
                 tag: widget.pokemon.img!,
-                child: Container(
+                child: SizedBox(
                   width: 200,
                   child: Image.network(
                     widget.pokemon.img!,
@@ -298,7 +297,7 @@ class PokemonDetailState extends State<PokemonDetail> {
           alignment: Alignment.topCenter,
           child: Hero(
               tag: widget.pokemon.img!,
-              child: Container(
+              child: SizedBox(
                 width: 150,
                 height: 130,
                 child: Image.network(
